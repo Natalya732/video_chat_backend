@@ -1,8 +1,4 @@
 import crypto from "crypto";
-import { parseBuffer } from "music-metadata";
-import axios from "axios";
-
-import { uploadAudio } from "./firebase.js";
 
 const createError = (res, message, code = 400, err = "") => {
   res.status(code).json({
@@ -38,25 +34,6 @@ function formatSecondsToMinutesSeconds(seconds) {
   return `${minutes}:${
     remainingSeconds < 10 ? "0" + remainingSeconds : remainingSeconds
   }`;
-}
-
-function getBlobDuration(blob) {
-  return new Promise((resolve, reject) => {
-    blob.arrayBuffer().then(async (buffer) => {
-      const audioBuffer = Buffer.from(buffer);
-
-      const audioMetadata = await parseBuffer(audioBuffer, "audio/mp3");
-
-      if (!audioMetadata) {
-        console.log("Failed to read meta-data from audio");
-        reject(0);
-        return;
-      }
-
-      const durationInSeconds = audioMetadata.format.duration;
-      resolve(durationInSeconds);
-    });
-  });
 }
 
 const getFileHashSha256 = async (blob) => {
@@ -98,7 +75,6 @@ export {
   validateEmail,
   formatSecondsToMinutesSeconds,
   getFileHashSha256,
-  getBlobDuration,
   getRandomInteger,
   shuffleArray,
 };
